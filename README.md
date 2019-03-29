@@ -12,4 +12,8 @@ The decryption process is:
 
 Run the DecryptMessage program and it will give you the AES key
 
-Decryption using only the AES key will be added soon!
+Now copy the key from the console and run the AESDecrypt program
+
+Paste the key when prompted
+
+You will obtain your message after a second or two
