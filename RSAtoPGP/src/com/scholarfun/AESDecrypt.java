@@ -1,45 +1,37 @@
 package com.scholarfun;
-
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Scanner;
-
-import static com.scholarfun.AESEncrypt.setKey;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class AESDecrypt {
     private static SecretKeySpec secretKey;
     private static byte[] key;
-    static String path = "D:\\RSAtoPGP";
+    static String path = "C:\\Users\\samarth\\IdeaProjects\\PGP";
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader("encryptedText.txt"));
         String line = reader.readLine();
         System.out.println(line);
 
-        File filePublicKey = new File(path + "/AES_Key.txt");
-        FileInputStream fis = new FileInputStream(path + "/AES_Key.txt");
-        byte[] encodedPublicKey = new byte[(int) filePublicKey.length()];
-        fis.read(encodedPublicKey);
-        fis.close();
-        final String key = new String(encodedPublicKey, UTF_8);
-        System.out.println(key);
+        Scanner scanner = new Scanner(System.in);
+        final String AESKey;
+
+        System.out.print("Enter your key: ");
+        AESKey = scanner.nextLine();
 
 
-
-        String decodedMessage = AESDecrypt.decrypt(line, key);
+        String decodedMessage = AESDecrypt.decrypt(line, AESKey);
 
         System.out.println(decodedMessage);
     }
     public static String decrypt(String strToDecrypt, String secret)
     {
+        System.out.println("Key: "+secret);
         try
         {
             setKey(secret);
@@ -52,5 +44,22 @@ public class AESDecrypt {
             System.out.println("Error while decrypting: " + e.toString());
         }
         return null;
+    }
+    public static void setKey(String myKey)
+    {
+        MessageDigest sha = null;
+        try {
+            key = myKey.getBytes("UTF-8");
+            sha = MessageDigest.getInstance("SHA-1");
+            key = sha.digest(key);
+            key = Arrays.copyOf(key, 16);
+            secretKey = new SecretKeySpec(key, "AES");
+        }
+        catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 }
