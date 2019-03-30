@@ -1,14 +1,16 @@
 package com.scholarfun;
 
 import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Base64;
 
-import static com.scholarfun.EncryptMessage.decryptMessage;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class DecryptMessage {
     String path = "D:\\RSAtoPGP";
@@ -37,10 +39,22 @@ public class DecryptMessage {
 
         return privateKey;
     }
+
+    public static String decryptMessage(String cipherText, PrivateKey privateKey) throws NoSuchPaddingException,
+            NoSuchAlgorithmException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException {
+        byte[] bytes = Base64.getDecoder().decode(cipherText);
+
+        Cipher decryptCipher = Cipher.getInstance("RSA");
+        decryptCipher.init(Cipher.DECRYPT_MODE, privateKey);
+
+        return new String(decryptCipher.doFinal(bytes), UTF_8);
+    }
+
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException,
             IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchPaddingException {
 
         PrivateKey privateKey =  LoadKeyPair("D:\\RSAtoPGP", "RSA");
+
         BufferedReader reader = new BufferedReader(new FileReader("EncodedText.txt"));
         String line = reader.readLine();
 

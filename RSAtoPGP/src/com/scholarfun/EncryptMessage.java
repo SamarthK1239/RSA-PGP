@@ -25,6 +25,7 @@ public class EncryptMessage {
         fis.close();
 
 
+
         KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
         X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(
                 encodedPublicKey);
@@ -42,19 +43,11 @@ public class EncryptMessage {
         return Base64.getEncoder().encodeToString(cipherText);
     }
 
-    public static String decryptMessage(String cipherText, PrivateKey privateKey) throws NoSuchPaddingException,
-            NoSuchAlgorithmException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException {
-        byte[] bytes = Base64.getDecoder().decode(cipherText);
 
-        Cipher decryptCipher = Cipher.getInstance("RSA");
-        decryptCipher.init(Cipher.DECRYPT_MODE, privateKey);
-
-        return new String(decryptCipher.doFinal(bytes), UTF_8);
-    }
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException,
             IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, InvalidKeyException {
 
-        PrintStream fileOut = new PrintStream(new FileOutputStream("EncodedText.txt"));
+        PrintStream printStream = new PrintStream(new FileOutputStream("EncodedText.txt"));
         PublicKey publicKey = LoadKeyPair("D:\\RSAtoPGP", "RSA");
 
         BufferedReader reader = new BufferedReader(new FileReader("AES_Key.txt"));
@@ -62,24 +55,34 @@ public class EncryptMessage {
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Encode String or AES key? ");
+        System.out.println("Encode String or AESKeyGen key? ");
         String command = scanner.nextLine();
         command = command.toUpperCase();
 
+
         if(command.equals("STRING")) {
-            System.out.print("Enter your message or your AES key: ");
+            System.out.print("Enter your message or your AESKeyGen key: ");
             String message = scanner.nextLine();
 
             String cipherText = encryptMessage(message, publicKey);
             System.out.println(cipherText);
-            fileOut.println(cipherText);
+            printStream.println(cipherText);
         }
         else if (command.equals("AES KEY")){
             String message = reader.readLine();
 
             String cipherText = encryptMessage(message, publicKey);
             System.out.println(cipherText);
-            fileOut.println(cipherText);
+            printStream.println(cipherText);
+        }
+        else if (command.equals("H//")){
+            System.out.println("Command 'string' for plain text");
+            System.out.println("Command 'aes key' for aes key encryption");
+
+        }
+        else{
+            System.out.println("Error with instructions");
+            System.out.println("Command 'h//' for help");
         }
 
 

@@ -1,4 +1,5 @@
 package com.scholarfun;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
@@ -9,9 +10,10 @@ import java.util.Base64;
 import java.util.Scanner;
 
 public class AESDecrypt {
+
     private static SecretKeySpec secretKey;
     private static byte[] key;
-    static String path = "C:\\Users\\samarth\\IdeaProjects\\PGP";
+    static String path = "D:\\RSAtoPGP";
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader("encryptedText.txt"));
