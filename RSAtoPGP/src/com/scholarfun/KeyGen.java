@@ -11,10 +11,10 @@ public class KeyGen {
         KeyGen keygen = new KeyGen();
         try {
             String path = "D:\\RSAtoPGP";
-
+            SecureRandom random = new SecureRandom();
             KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
 
-            keyGen.initialize(3072);
+            keyGen.initialize(512, random);
             KeyPair generatedKeyPair = keyGen.genKeyPair();
 
             System.out.println("Generated Key Pair");
@@ -44,19 +44,21 @@ public class KeyGen {
 
     public static KeyPair LoadKeyPair(String path, String algorithm)
             throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-
+        // Read Public Key.
         File filePublicKey = new File(path + "/public.key");
         FileInputStream fis = new FileInputStream(path + "/public.key");
         byte[] encodedPublicKey = new byte[(int) filePublicKey.length()];
         fis.read(encodedPublicKey);
         fis.close();
 
+        // Read Private Key.
         File filePrivateKey = new File(path + "/private.key");
         fis = new FileInputStream(path + "/private.key");
         byte[] encodedPrivateKey = new byte[(int) filePrivateKey.length()];
         fis.read(encodedPrivateKey);
         fis.close();
 
+        // Generate KeyPair.
         KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
         X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(
                 encodedPublicKey);
@@ -72,12 +74,14 @@ public class KeyGen {
         PrivateKey privateKey = keyPair.getPrivate();
         PublicKey publicKey = keyPair.getPublic();
 
+        // Store Public Key.
         X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(
                 publicKey.getEncoded());
         FileOutputStream fos = new FileOutputStream(path + "/public.key");
         fos.write(x509EncodedKeySpec.getEncoded());
         fos.close();
 
+        // Store Private Key.
         PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(
                 privateKey.getEncoded());
         fos = new FileOutputStream(path + "/private.key");
