@@ -18,5 +18,5 @@ Paste the key when prompted
 
 You will obtain your message after a second or two
 
-"Reusing a symmetric encryption is a cardinal sin of cryptography"
+"Reusing a symmetric encryption key is a cardinal sin of cryptography"
 and so, don't forget to generate a new key every single time.
